@@ -13,16 +13,18 @@ import { useParams, useRouter } from "next/navigation";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { 
-    Form, 
-    FormControl, 
-    FormField, 
-    FormItem, 
-    FormLabel, 
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
     FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 
 
@@ -41,6 +43,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 }) => {
     const params = useParams();
     const router = useRouter();
+    const origin = useOrigin();
 
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -70,7 +73,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             router.refresh();
             router.push("/");
             toast.success("Store deleted.");
-        } catch(error) {
+        } catch (error) {
             toast.error("Please make sure that you have removed all products and categories first.");
         } finally {
             setLoading(false)
@@ -80,7 +83,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
 
     return (
         <>
-            <AlertModal 
+            <AlertModal
                 isOpen={open}
                 onClose={() => setOpen(false)}
                 onConfirm={onDelete}
@@ -102,8 +105,8 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
             </div>
             <Separator />
             <Form {...form}>
-                <form 
-                    onSubmit={form.handleSubmit(onSubmit)} 
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-8 w-full"
                 >
                     <div className="grid grid-cols-3 gap-8">
@@ -116,7 +119,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                                     <FormControl>
                                         <Input disabled={loading} placeholder="Store name" {...field} />
                                     </FormControl>
-                                    <FormMessage/>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
@@ -126,6 +129,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({
                     </Button>
                 </form>
             </Form>
+            <Separator />
+            <ApiAlert
+                title="NEXT_PUBLIC_API_URL"
+                description={`${origin}/api/${params.storeId}`}
+                variant="public"
+            />
         </>
     );
 };
